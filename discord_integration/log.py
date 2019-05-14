@@ -5,6 +5,13 @@ from django.utils.log import AdminEmailHandler
 MESSAGE_LIMIT = getattr(settings, 'DISCORD_MESSAGE_LIMIT', 1000)
 
 
+def escape(text):
+    escape_chars = ('*', '_', '~', '`')
+    for ch in escape_chars:
+        text = text.replace(ch, '\\' + ch)
+    return text
+
+
 class DiscordMessageHandler(AdminEmailHandler):
     def emit(self, record):
         from discord_integration.models import DiscordIntegration
@@ -28,8 +35,8 @@ class DiscordMessageHandler(AdminEmailHandler):
 
         discord_message({
             'embeds': [{
-                'title': subject,
-                'description': message[:MESSAGE_LIMIT],
+                'title': escape(subject),
+                'description': escape(message[:MESSAGE_LIMIT]),
                 'color': colors.get(self.__level, 0xeee),
             }],
         })
