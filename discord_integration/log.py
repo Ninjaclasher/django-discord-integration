@@ -6,7 +6,7 @@ MESSAGE_LIMIT = getattr(settings, 'DISCORD_MESSAGE_LIMIT', 1000)
 
 
 def escape(text):
-    escape_chars = ('*', '_', '~', '`')
+    escape_chars = ('*', '_', '~', '`', '|')
     for ch in escape_chars:
         text = text.replace(ch, '\\' + ch)
     return text
