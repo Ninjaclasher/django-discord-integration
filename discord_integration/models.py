@@ -13,7 +13,7 @@ class DiscordIntegration(SingletonModel):
     avatar_url = models.URLField(blank=True,
                                  verbose_name=_('discord bot avatar'),
                                  help_text=_('Override the bot avatar set in '
-                                             'the Discord settings'))
+                                             'the Discord settings.'))
     webhook_url = models.URLField(verbose_name=_('discord webhook url'),
                                   help_text=_('The Discord webhook url found '
-                                              'in the Discord settings'))
+                                              'in the Discord settings.'))
