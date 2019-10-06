@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.utils.log import AdminEmailHandler
 
+__all__ = ['DiscordMessageHandler', 'SimpleDiscordMessageHandler']
+
 
 MESSAGE_LIMIT = getattr(settings, 'DISCORD_MESSAGE_LIMIT', 1000)
 
@@ -40,3 +42,8 @@ class DiscordMessageHandler(AdminEmailHandler):
                 'color': colors.get(self.__level, 0xeee),
             }],
         })
+
+
+class SimpleDiscordMessageHandler(DiscordMessageHandler):
+    def send_mail(self, subject, message, *args, **kwargs):
+        super().send_mail(subject, '', *args, **kwargs)
