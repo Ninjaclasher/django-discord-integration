@@ -1,0 +1,15 @@
+[flake8]
+max-line-length = 120
+application-import-names = discord_integration
+import-order-style = pycharm
+enable-extensions = G
+ignore =
+    # allow only generator_stop and annotations future imports
+    FI10,FI11,FI12,FI13,FI14,FI15,FI16,FI17,FI18,FI55,FI58,
+    C814, # missing trailing comma in Python 2 only
+per-file-ignores =
+    # F401: unused imports, ignore in all __init__.py
+    # F403: import *
+    ./*/__init__.py:F401,F403
+    # E501: line too long, ignore in migrations
+    ./discord_integration/migrations/*.py:E501
