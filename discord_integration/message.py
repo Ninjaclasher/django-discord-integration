@@ -2,7 +2,6 @@ import datetime
 import json
 
 import requests
-
 from django.core.exceptions import ImproperlyConfigured
 
 from discord_integration.models import DiscordIntegration
