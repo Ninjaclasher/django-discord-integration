@@ -2,6 +2,8 @@
 
 Discord integration for Django, supporting error reporting via webhooks.
 
+This app comes with two message handlers: `DiscordMessageHandler` and `SimpleDiscordMessageHandler`. `DiscordMessageHandler` sends all the information related to the message, such as a traceback if there is one, while the `SimpleDiscordMessageHandler` only sends the title.
+
 ## Installation
 ```bash
 $ pip install django-discord-integration
