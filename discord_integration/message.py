@@ -18,7 +18,7 @@ def discord_message(message):
     data = DiscordIntegration.get_solo()
 
     if not data.webhook_url:
-        return ImproperlyConfigured('Discord Webhook URL is not configured')
+        raise ImproperlyConfigured('Discord Webhook URL is not configured')
 
     if data.bot_name and 'username' not in message:
         message['username'] = data.bot_name
