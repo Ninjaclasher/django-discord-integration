@@ -1,7 +1,7 @@
 import datetime
 import json
+from urllib import request
 
-import requests
 from django.core.exceptions import ImproperlyConfigured
 
 from discord_integration.models import DiscordIntegration
@@ -29,5 +29,10 @@ def discord_message(message):
     if 'timestamp' not in message:
         message['timestamp'] = timestamp()
 
-    requests.post(data.webhook_url, data=json.dumps(message),
-                  headers={'Content-Type': 'application/json'})
+    request.urlopen(
+        request.Request(
+            data.webhook_url,
+            data=json.dumps(message).encode('utf-8'),
+            headers={'User-Agent': 'Python/3', 'Content-Type': 'application/json'},
+        ),
+    )

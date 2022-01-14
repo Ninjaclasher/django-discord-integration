@@ -7,7 +7,7 @@ setup(
     name='django-discord-integration',
     version='1.0.5',
     author='Evan Zhang',
-    install_requires=['requests', 'django-solo'],
+    install_requires=['django-solo'],
     description='Discord integration for Django, supporting error reporting via webhooks.',
     long_description=readme,
     long_description_content_type='text/markdown',
