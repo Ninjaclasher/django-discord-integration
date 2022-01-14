@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='django-discord-integration',
-    version='1.0.5',
+    version='1.0.6',
     author='Evan Zhang',
     install_requires=['django-solo'],
     description='Discord integration for Django, supporting error reporting via webhooks.',
@@ -24,6 +24,9 @@ setup(
         'Topic :: Communications :: Chat',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7',
     ],
 )
