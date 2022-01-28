@@ -6,6 +6,12 @@ __all__ = ['DiscordMessageHandler', 'SimpleDiscordMessageHandler']
 
 MESSAGE_LIMIT = getattr(settings, 'DISCORD_MESSAGE_LIMIT', 1000)
 
+COLORS = getattr(settings, 'DISCORD_COLORS', {
+    'ERROR': 0xe74c3c,
+    'WARNING': 0xe78c3c,
+    'INFO': 0xe7ec3c,
+})
+
 
 def escape(text):
     escape_chars = ('*', '_', '~', '`', '|')
@@ -29,17 +35,11 @@ class DiscordMessageHandler(AdminEmailHandler):
     def send_mail(self, subject, message, *args, **kwargs):
         from discord_integration.message import discord_message
 
-        colors = {
-            'ERROR': 0xe74c3c,
-            'WARNING': 0xe78c3c,
-            'INFO': 0xe7ec3c,
-        }
-
         discord_message({
             'embeds': [{
                 'title': escape(subject),
                 'description': escape(message[:MESSAGE_LIMIT]),
-                'color': colors.get(self.__level, 0xeee),
+                'color': COLORS.get(self.__level, 0xeee),
             }],
         })
 
