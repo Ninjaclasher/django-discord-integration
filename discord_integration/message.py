@@ -1,4 +1,5 @@
 import json
+from typing import Any, Dict
 from urllib import request
 
 from django.core.exceptions import ImproperlyConfigured
@@ -8,7 +9,7 @@ from discord_integration.models import DiscordIntegration
 __all__ = ['discord_message']
 
 
-def discord_message(message):
+def discord_message(message: Dict[str, Any]) -> None:
     data = DiscordIntegration.get_solo()
 
     if not data.webhook_url:

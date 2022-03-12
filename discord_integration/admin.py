@@ -1,5 +1,5 @@
 from django.contrib import admin
-from solo.admin import SingletonModelAdmin
+from solo.admin import SingletonModelAdmin  # type: ignore
 
 from discord_integration.models import DiscordIntegration
 
