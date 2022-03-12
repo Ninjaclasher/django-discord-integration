@@ -1,0 +1,24 @@
+name: pypi
+on:
+  release:
+    types: [published]
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Install build dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install setuptools wheel
+    - name: Build package
+      run: python setup.py sdist bdist_wheel
+    - name: Publish package to PyPI
+      uses: pypa/gh-action-pypi-publish@v1.0.0a0
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_PASSWORD }}
