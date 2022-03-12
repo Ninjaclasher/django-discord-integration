@@ -1,4 +1,3 @@
-import datetime
 import json
 from urllib import request
 
@@ -7,11 +6,6 @@ from django.core.exceptions import ImproperlyConfigured
 from discord_integration.models import DiscordIntegration
 
 __all__ = ['discord_message']
-
-
-def timestamp():
-    return datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc) \
-                            .replace(microsecond=0).isoformat()
 
 
 def discord_message(message):
@@ -25,9 +19,6 @@ def discord_message(message):
 
     if data.avatar_url and 'avatar_url' not in message:
         message['avatar_url'] = data.avatar_url
-
-    if 'timestamp' not in message:
-        message['timestamp'] = timestamp()
 
     request.urlopen(
         request.Request(
