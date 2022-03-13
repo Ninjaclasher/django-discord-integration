@@ -1,9 +1,15 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from solo.models import SingletonModel  # type: ignore
 
 
-class DiscordIntegration(SingletonModel):
+class DiscordIntegration(models.Model):
+    name: models.CharField = models.CharField(
+        max_length=30,
+        unique=True,
+        default='default',
+        verbose_name=_('logger name'),
+        help_text=_('The name to specify as a keyword argument in the Django logging settings.'),
+    )
     bot_name: models.CharField = models.CharField(
         max_length=30,
         blank=True,
@@ -19,3 +25,6 @@ class DiscordIntegration(SingletonModel):
         verbose_name=_('discord webhook url'),
         help_text=_('The Discord webhook url found in the Discord settings.'),
     )
+
+    def __str__(self) -> str:
+        return self.name
