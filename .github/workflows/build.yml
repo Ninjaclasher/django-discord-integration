@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies and mypy
       run: |
         pip install -r requirements.txt
-        pip install mypy django-stubs
+        pip install mypy django-stubs types-urllib3
     - name: Verify mypy types
       run: |
         mypy --version
