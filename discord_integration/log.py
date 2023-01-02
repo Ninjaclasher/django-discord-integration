@@ -2,11 +2,11 @@ import json
 from logging import LogRecord
 from typing import Any, Dict, Optional
 from urllib import request
-from urllib3 import encode_multipart_formdata
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.log import AdminEmailHandler
+from urllib3 import encode_multipart_formdata
 
 __all__ = ['DiscordMessageHandler', 'SimpleDiscordMessageHandler']
 
