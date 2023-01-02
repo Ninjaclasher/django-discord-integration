@@ -2,6 +2,7 @@ import json
 from logging import LogRecord
 from typing import Any, Dict, Optional
 from urllib import request
+from urllib3 import encode_multipart_formdata
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -29,7 +30,7 @@ class DiscordWebhook:
         except DiscordIntegration.DoesNotExist:
             self.model = None
 
-    def message(self, message: Dict[str, Any]) -> None:
+    def message(self, message: Dict[str, Any], full_message: Optional[str] = None) -> None:
         if self.model is None:
             raise ImproperlyConfigured('Discord integration model does not exist.')
 
@@ -39,10 +40,22 @@ class DiscordWebhook:
         if self.model.avatar_url and 'avatar_url' not in message:
             message['avatar_url'] = self.model.avatar_url
 
+        files = []
+        if full_message is not None:
+            files.append(('full_message.txt', full_message, 'text/plain'))
+
+        data = {
+            'payload_json': ('', json.dumps(message), 'application/json'),
+        }
+        for i, file in enumerate(files):
+            data['files[{}]'.format(i)] = file
+
+        body, header = encode_multipart_formdata(data)
+
         req = request.Request(
             self.model.webhook_url,
-            data=json.dumps(message).encode('utf-8'),
-            headers={'User-Agent': 'Python/3', 'Content-Type': 'application/json'},
+            data=body,
+            headers={'User-Agent': 'Python/3', 'Content-Type': header},
         )
         request.urlopen(req)
 
@@ -66,13 +79,16 @@ class DiscordMessageHandler(AdminEmailHandler):
     def send_mail(self, subject: str, message: str, *args: Any, **kwargs: Any) -> None:
         webhook = DiscordWebhook(self.model_name)
 
-        webhook.message({
-            'embeds': [{
-                'title': webhook.escape(subject),
-                'description': webhook.escape(message[:MESSAGE_LIMIT]),
-                'color': COLORS.get(self.__level, 0xeee),
-            }],
-        })
+        webhook.message(
+            {
+                'embeds': [{
+                    'title': webhook.escape(subject),
+                    'description': webhook.escape(message[:MESSAGE_LIMIT]),
+                    'color': COLORS.get(self.__level, 0xeee),
+                }],
+            },
+            full_message=None if len(message) < MESSAGE_LIMIT else message,
+        )
 
 
 class SimpleDiscordMessageHandler(DiscordMessageHandler):
