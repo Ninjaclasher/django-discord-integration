@@ -1,4 +1,5 @@
 import json
+import traceback
 from logging import LogRecord
 from typing import Any, Dict, Optional
 from urllib import request
@@ -82,7 +83,8 @@ class DiscordMessageHandler(AdminEmailHandler):
 
     def emit(self, record: LogRecord) -> None:
         self.__level = record.levelname
-        self.__traceback = record.exc_text or record.getMessage()
+        ei = record.exc_info
+        self.__traceback = ''.join(traceback.format_exception(*ei)) if ei is not None else record.getMessage()
         return super().emit(record)
 
     def send_mail(self, subject: str, message: str, *args: Any, **kwargs: Any) -> None:
