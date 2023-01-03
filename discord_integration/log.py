@@ -12,7 +12,7 @@ from urllib3 import encode_multipart_formdata
 __all__ = ['DiscordMessageHandler', 'SimpleDiscordMessageHandler']
 
 
-MESSAGE_LIMIT: int = getattr(settings, 'DISCORD_MESSAGE_LIMIT', 1000)
+MESSAGE_LIMIT: int = getattr(settings, 'DISCORD_MESSAGE_LIMIT', 4000)
 BOT_USERNAME: Optional[str] = getattr(settings, 'DISCORD_BOT_USERNAME', None)
 AVATAR_URL: Optional[str] = getattr(settings, 'DISCORD_AVATAR_URL', None)
 
