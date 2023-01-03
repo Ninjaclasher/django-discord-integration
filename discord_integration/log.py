@@ -70,6 +70,10 @@ class DiscordWebhook:
             text = text.replace(ch, '\\' + ch)
         return text
 
+    @staticmethod
+    def format_codeblock(text: str, language: str = '') -> str:
+        return '```{}\n{}\n```'.format(language, text)
+
 
 class DiscordMessageHandler(AdminEmailHandler):
     def __init__(self, model_name: str = 'default', **kwargs: Any) -> None:
@@ -78,6 +82,7 @@ class DiscordMessageHandler(AdminEmailHandler):
 
     def emit(self, record: LogRecord) -> None:
         self.__level = record.levelname
+        self.__traceback = record.exc_text or record.getMessage()
         return super().emit(record)
 
     def send_mail(self, subject: str, message: str, *args: Any, **kwargs: Any) -> None:
@@ -87,11 +92,11 @@ class DiscordMessageHandler(AdminEmailHandler):
             {
                 'embeds': [{
                     'title': webhook.escape(subject),
-                    'description': webhook.escape(message[:MESSAGE_LIMIT]),
+                    'description': webhook.format_codeblock(self.__traceback[:MESSAGE_LIMIT], 'py'),
                     'color': COLORS.get(self.__level, 0xeee),
                 }],
             },
-            full_message=None if len(message) < MESSAGE_LIMIT else message,
+            full_message=message,
         )
 
 
