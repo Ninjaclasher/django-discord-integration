@@ -12,6 +12,8 @@ __all__ = ['DiscordMessageHandler', 'SimpleDiscordMessageHandler']
 
 
 MESSAGE_LIMIT: int = getattr(settings, 'DISCORD_MESSAGE_LIMIT', 1000)
+BOT_USERNAME: Optional[str] = getattr(settings, 'DISCORD_BOT_USERNAME', None)
+AVATAR_URL: Optional[str] = getattr(settings, 'DISCORD_AVATAR_URL', None)
 
 COLORS: Dict[str, int] = getattr(settings, 'DISCORD_COLORS', {
     'ERROR': 0xe74c3c,
@@ -34,11 +36,13 @@ class DiscordWebhook:
         if self.model is None:
             raise ImproperlyConfigured('Discord integration model does not exist.')
 
-        if self.model.bot_name and 'username' not in message:
-            message['username'] = self.model.bot_name
+        username = self.model.bot_name or BOT_USERNAME
+        if username and 'username' not in message:
+            message['username'] = username
 
-        if self.model.avatar_url and 'avatar_url' not in message:
-            message['avatar_url'] = self.model.avatar_url
+        avatar_url = self.model.avatar_url or AVATAR_URL
+        if avatar_url and 'avatar_url' not in message:
+            message['avatar_url'] = avatar_url
 
         files = []
         if full_message is not None:
