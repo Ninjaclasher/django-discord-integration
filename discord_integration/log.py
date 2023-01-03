@@ -46,7 +46,7 @@ class DiscordWebhook:
             message['avatar_url'] = avatar_url
 
         files = []
-        if full_message is not None:
+        if full_message:
             files.append(('full_message.txt', full_message, 'text/plain'))
 
         data = {
@@ -81,10 +81,32 @@ class DiscordMessageHandler(AdminEmailHandler):
         super().__init__(**kwargs)
         self.model_name = model_name
 
+    def _get_raw_insecure_uri(self, record: LogRecord) -> str:
+        """
+        Return an absolute URI from variables available in this request. Skip
+        allowed hosts protection, so may return insecure URI.
+
+        From Django source code, views/debug.py
+        """
+        if not hasattr(record, 'request'):
+            return ''
+        request = record.request
+        return '{scheme}://{host}{path}'.format(
+            scheme=request.scheme,
+            host=request._get_raw_host(),
+            path=request.get_full_path(),
+        )
+
+    def _get_traceback(self, record: LogRecord) -> str:
+        if record.exc_info:
+            return ''.join(traceback.format_exception(*record.exc_info))
+        else:
+            return record.getMessage()
+
     def emit(self, record: LogRecord) -> None:
         self.__level = record.levelname
-        ei = record.exc_info
-        self.__traceback = ''.join(traceback.format_exception(*ei)) if ei is not None else record.getMessage()
+        self.__request_uri = self._get_raw_insecure_uri(record)
+        self.__traceback = self._get_traceback(record)
         return super().emit(record)
 
     def send_mail(self, subject: str, message: str, *args: Any, **kwargs: Any) -> None:
@@ -94,6 +116,7 @@ class DiscordMessageHandler(AdminEmailHandler):
             {
                 'embeds': [{
                     'title': webhook.escape(subject),
+                    'url': self.__request_uri,
                     'description': webhook.format_codeblock(self.__traceback[:MESSAGE_LIMIT], 'py'),
                     'color': COLORS.get(self.__level, 0xeee),
                 }],
