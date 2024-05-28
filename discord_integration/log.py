@@ -1,12 +1,13 @@
 import json
 import traceback
 from logging import LogRecord
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 from urllib import request
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.log import AdminEmailHandler
+from django_stubs_ext import StrOrPromise
 from urllib3 import encode_multipart_formdata
 
 __all__ = ['DiscordMessageHandler', 'SimpleDiscordMessageHandler']
@@ -49,13 +50,16 @@ class DiscordWebhook:
         if full_message:
             files.append(('full_message.txt', full_message, 'text/plain'))
 
-        data = {
+        data: Dict[str, Tuple[Optional[str], str, str]] = {
             'payload_json': (None, json.dumps(message), 'application/json'),
         }
         for i, file in enumerate(files):
             data['files[{}]'.format(i)] = file
 
-        body, header = encode_multipart_formdata(data)
+        # We want to pass in None for the filename, but for some reason the
+        # typing here doesn't allow that even though the underlying code
+        # supports it. Ignore the type error for now.
+        body, header = encode_multipart_formdata(data)  # type: ignore[arg-type]
 
         req = request.Request(
             self.model.webhook_url,
@@ -109,22 +113,22 @@ class DiscordMessageHandler(AdminEmailHandler):
         self.__traceback = self._get_traceback(record)
         return super().emit(record)
 
-    def send_mail(self, subject: str, message: str, *args: Any, **kwargs: Any) -> None:
+    def send_mail(self, subject: StrOrPromise, message: StrOrPromise, *args: Any, **kwargs: Any) -> None:
         webhook = DiscordWebhook(self.model_name)
 
         webhook.message(
             {
                 'embeds': [{
-                    'title': webhook.escape(subject),
+                    'title': webhook.escape(str(subject)),
                     'url': self.__request_uri,
                     'description': webhook.format_codeblock(self.__traceback[:MESSAGE_LIMIT], 'py'),
                     'color': COLORS.get(self.__level, 0xeee),
                 }],
             },
-            full_message=message,
+            full_message=str(message),
         )
 
 
 class SimpleDiscordMessageHandler(DiscordMessageHandler):
-    def send_mail(self, subject: str, message: str, *args: Any, **kwargs: Any) -> None:
+    def send_mail(self, subject: StrOrPromise, message: StrOrPromise, *args: Any, **kwargs: Any) -> None:
         super().send_mail(subject, '', *args, **kwargs)
