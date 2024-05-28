@@ -50,7 +50,7 @@ class DiscordWebhook:
             files.append(('full_message.txt', full_message, 'text/plain'))
 
         data = {
-            'payload_json': ('', json.dumps(message), 'application/json'),
+            'payload_json': (None, json.dumps(message), 'application/json'),
         }
         for i, file in enumerate(files):
             data['files[{}]'.format(i)] = file
