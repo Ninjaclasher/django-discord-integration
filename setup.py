@@ -5,9 +5,12 @@ with open('README.md') as f:
 
 setup(
     name='django-discord-integration',
-    version='1.2.7',
+    version='1.2.8',
     author='Evan Zhang',
-    install_requires=[],
+    install_requires=[
+        'urllib3',
+        'django-stubs-ext',
+    ],
     description='Discord integration for Django, supporting error reporting via webhooks.',
     long_description=readme,
     long_description_content_type='text/markdown',
