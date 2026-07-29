@@ -4,13 +4,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v6
+    - name: Set up Python
+      uses: actions/setup-python@v6
       with:
-        python-version: 3.7
+        python-version: 3.14
     - name: Install flake8
-      run: pip install flake8 flake8-import-order flake8-future-import flake8-commas flake8-logging-format
+      run: pip install flake8 flake8-import-order flake8-commas
     - name: Lint with flake8
       run: |
         flake8 --version
@@ -18,11 +18,11 @@ jobs:
   mypy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v6
+    - name: Set up Python 3.14
+      uses: actions/setup-python@v6
       with:
-        python-version: 3.7
+        python-version: 3.14
     - name: Install dependencies and mypy
       run: |
         pip install -r requirements.txt
