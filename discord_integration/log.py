@@ -16,6 +16,7 @@ __all__ = ['DiscordMessageHandler', 'SimpleDiscordMessageHandler']
 MESSAGE_LIMIT: int = getattr(settings, 'DISCORD_MESSAGE_LIMIT', 4000)
 BOT_USERNAME: Optional[str] = getattr(settings, 'DISCORD_BOT_USERNAME', None)
 AVATAR_URL: Optional[str] = getattr(settings, 'DISCORD_AVATAR_URL', None)
+TIMEOUT_SECONDS: float = getattr(settings, 'DISCORD_TIMEOUT_SECONDS', 5.0)
 
 COLORS: Dict[str, int] = getattr(settings, 'DISCORD_COLORS', {
     'ERROR': 0xe74c3c,
@@ -66,7 +67,7 @@ class DiscordWebhook:
             data=body,
             headers={'User-Agent': 'Python/3', 'Content-Type': header},
         )
-        request.urlopen(req)
+        request.urlopen(req, timeout=TIMEOUT_SECONDS)
 
     @staticmethod
     def escape(text: str) -> str:
